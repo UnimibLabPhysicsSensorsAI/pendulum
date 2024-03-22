@@ -1,16 +1,35 @@
-import cv2
+import cv2, time
 
 try:
     import picamera2
     from picamera2 import Picamera2
+
+    def initialise_camera():
+        """Initialise the camera."""
+        camera = Picamera2()
+        camera.configure("still")
+        camera.start()
+        time.sleep(1)
+        camera.set_controls({"AeEnable": False, "AwbEnable": False, "FrameRate": 1.0})
+        # And wait for those settings to take effect
+        time.sleep(1)
+        return camera
+    
     def acquire_image(name, camera=None):
         """Acquire an image from the picamera."""
         if camera is None:
-            camera = Picamera2()
-            camera.start()
-        camera.capture_file(name)
-        camera.close()
+            camera = initialise_camera()
+        # capture
+        r = camera.capture_request()
+        r.save("main", name)
+        r.release()
         return 
+    
+    def close_camera(camera):
+        """Close the camera."""
+        camera.stop()
+        return
+    
 except ImportError:
     print("Picamera2 is not available. The related functions are not defined.")
 
