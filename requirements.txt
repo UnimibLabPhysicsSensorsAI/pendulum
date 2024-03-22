@@ -1,0 +1,7 @@
+tabulate
+numpy
+scipy
+pandas
+opencv-python
+matplotlib
+picamera2
