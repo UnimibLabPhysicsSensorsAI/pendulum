@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from context import pendulum
 from pendulum.io import load_image, save_image
-from pendulum.image_processing import mask, mask_by_color
+from pendulum.image_processing import mask, mask_by_color, find_centroids
 
 
 
@@ -24,7 +24,12 @@ def main():
     upper_green = np.array([90, 255, 255])
     # Mask the image by color
     green_regions = mask_by_color(masked_image, lower_green, upper_green, cv2.COLOR_RGB2HSV)
-    plt.imshow(green_regions, cmap='gray')
+
+    # Find the contours in the green regions
+    green_points = find_centroids(green_regions)
+    plt.imshow(masked_image, cmap='gray')
+    for point in green_points:
+        plt.scatter(point[0], point[1], color='green', marker='o', facecolor='none', s=100)
     plt.show()
     return
 
